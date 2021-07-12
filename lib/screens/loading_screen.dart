@@ -1,5 +1,9 @@
+
+import 'package:clima/services/location.dart';
+import 'package:clima/services/networking.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
+
+const kApiKey = '5e993c4377d33bc36dc45ceb1ad6ff4e';
 
 class LoadingScreen extends StatefulWidget {
   @override
@@ -7,27 +11,30 @@ class LoadingScreen extends StatefulWidget {
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
-  Position position;
+  double latitude;
+  double longitude;
 
   @override
   void initState() {
     super.initState();
-    getLocation();
+    getLocationData();
   }
 
-  void getLocation() async {
-    try {
-      position = await Geolocator()
-          .getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
-      print(position);
-    } catch (e) {
-      print(e);
-    }
+  void getLocationData() async {
+    // get user coordinates
+    Location location = Location();
+    await location.getCurrentLocation();
+    latitude = location.latitude;
+    longitude = location.longitude;
+
+    // Get weather data
+    NetworkHelper network = NetworkHelper('http://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&APPID=$kApiKey');
+
+    var json = await network.getData();
   }
 
   @override
   Widget build(BuildContext context) {
-    print(position);
     return Scaffold();
   }
 }
