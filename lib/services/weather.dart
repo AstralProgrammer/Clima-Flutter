@@ -49,4 +49,11 @@ class WeatherModel {
       return 'Bring a 🧥 just in case';
     }
   }
+
+  Future<dynamic> getCityWeather(String cityName) async {
+    var url = '$kWeatherApiUrl?q=$cityName&appid=$kApiKey&units=metric';
+    NetworkHelper networkHelper = NetworkHelper(url);
+    return await networkHelper.getData();
+
+  }
 }
